@@ -43,3 +43,5 @@ jobs:
           fi
           echo "EVENT:"
           jq --raw-output . "$GITHUB_EVENT_PATH"
+          echo "DIFF"
+          git diff --name-only "${start:?}"

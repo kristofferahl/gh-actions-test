@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -32,7 +32,14 @@ jobs:
       - name: Run a one-line script
         run: |
           echo Hello, world!
-          echo "This: $(jq --raw-output .commits[0].id "$GITHUB_EVENT_PATH")"
-          echo "Previous: $(jq --raw-output .commits[-1].id "$GITHUB_EVENT_PATH")"
+          declare start="$(jq --raw-output .commits[0].id "$GITHUB_EVENT_PATH")"
+          declare end="$(jq --raw-output .commits[-1].id "$GITHUB_EVENT_PATH")"
+          echo "Start: $start"
+          echo "End: $end"
+          if [[ "$start" == "$end" ]]; then
+            echo "Only 1 commit"
+          else
+            echo "Multipe commits"
+          fi
           echo "EVENT:"
           jq --raw-output . "$GITHUB_EVENT_PATH"

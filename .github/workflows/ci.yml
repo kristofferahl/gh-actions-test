@@ -34,3 +34,5 @@ jobs:
           echo Hello, world!
           echo "This: $(jq --raw-output .commits[0].id "$GITHUB_EVENT_PATH")"
           echo "Previous: $(jq --raw-output .commits[-1].id "$GITHUB_EVENT_PATH")"
+          echo "EVENT:"
+          jq --raw-output . "$GITHUB_EVENT_PATH"

@@ -33,11 +33,17 @@ jobs:
         run: |
           export BRANCH="$(echo ${GITHUB_REF#refs/heads/})"
           echo "Finding first successful run against branch ${BRANCH:?}"
-          curl --request GET \
+
+          declare -r output="$(curl --request GET \
             --url https://api.github.com/repos/${{ github.repository }}/actions/runs \
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
-            | jq -r -c '[ .workflow_runs[] | select(.head_branch == env.BRANCH and .status == "completed" and .conclusion == "success")] | first | { head_branch, status, conclusion, head_commit }'
+            | jq -r -c '[ .workflow_runs[] | select(.head_branch == env.BRANCH and .status == "completed" and .conclusion == "success")] | first | { head_branch, status, conclusion, head_commit }')"
+          echo "OUTPUT:"
+          echo "${output}" | jq '.'
+
+          echo "HEAD COMMIT:"
+          echo "${output}" | jq '.head_commit.id'
 
       # Runs a single command using the runners shell
       - name: Run a one-line script

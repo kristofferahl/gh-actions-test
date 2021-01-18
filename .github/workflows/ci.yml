@@ -32,7 +32,7 @@ jobs:
       - name: Access API
         run: |
           export BRANCH="$(echo ${GITHUB_REF#refs/heads/})"
-          echo "Finding last successful run against branch ${BRANCH:?}"
+          echo "Finding last successful run against branch \"${BRANCH:?}\""
 
           declare -r output="$(curl --request GET \
             --url https://api.github.com/repos/${{ github.repository }}/actions/runs \

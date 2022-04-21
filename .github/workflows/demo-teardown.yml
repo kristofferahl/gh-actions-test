@@ -18,15 +18,33 @@ on:
         default: ""
 
 jobs:
-  teardown:
-    name: Teardown
+  teardown_workflow_dispatch:
+    name: Teardown (on workflow dispatch)
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/demo/') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Teardown tenant
+        run: |
+          export DEMO_NAME="${GITHUB_REF/refs\/heads\/demo\//}"
+          export DEMO_DISPLAY_NAME='${{ github.event.inputs.display_name }}'
+          [[ "${DEMO_DISPLAY_NAME:-}" == '' ]] && DEMO_DISPLAY_NAME="${DEMO_NAME:?}"
+          export TENANT_NAME="demo-${DEMO_NAME:?}"
+          echo "${DEMO_DISPLAY_NAME}"
+
+          echo ./stack --dev tenant teardown \
+            --tenant-name="${TENANT_NAME:?}" \
+            --tenant-namespace="${TENANT_NAMESPACE:?}" \
+  teardown_branch_deleted:
+    name: Teardown (on branch deleted)
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'refs/heads/demo/') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: master
       - name: Teardown tenant
         run: |
           export DEMO_NAME="${GITHUB_REF/refs\/heads\/demo\//}"

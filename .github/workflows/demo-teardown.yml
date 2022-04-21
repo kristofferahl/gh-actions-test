@@ -30,7 +30,7 @@ jobs:
           export DEMO_DISPLAY_NAME='${{ github.event.inputs.display_name }}'
           [[ "${DEMO_DISPLAY_NAME:-}" == '' ]] && DEMO_DISPLAY_NAME="${DEMO_NAME:?}"
           export TENANT_NAME="demo-${DEMO_NAME:?}"
-          echo "${TENANT_NAME}"
+          echo "${DEMO_DISPLAY_NAME}"
 
           echo ./stack --dev tenant teardown \
             --tenant-name="${TENANT_NAME:?}" \

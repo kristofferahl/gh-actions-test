@@ -39,7 +39,7 @@ jobs:
   teardown_branch_deleted:
     name: Teardown (on branch deleted)
     runs-on: ubuntu-latest
-    if: ${{ github.event.ref_type == 'branch' && startsWith(github.event.ref, 'refs/heads/demo/') }}
+    if: ${{ github.event.ref_type == 'branch' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,12 +47,5 @@ jobs:
           ref: master
       - name: Teardown tenant
         run: |
-          export DEMO_NAME="${GITHUB_REF/refs\/heads\/demo\//}"
-          export DEMO_DISPLAY_NAME='${{ github.event.inputs.display_name }}'
-          [[ "${DEMO_DISPLAY_NAME:-}" == '' ]] && DEMO_DISPLAY_NAME="${DEMO_NAME:?}"
-          export TENANT_NAME="demo-${DEMO_NAME:?}"
-          echo "${DEMO_DISPLAY_NAME}"
-
-          echo ./stack --dev tenant teardown \
-            --tenant-name="${TENANT_NAME:?}" \
-            --tenant-namespace="${TENANT_NAMESPACE:?}" \
+          echo ${{ github.event }}
+          

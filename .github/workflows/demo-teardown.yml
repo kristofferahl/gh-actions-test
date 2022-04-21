@@ -47,5 +47,5 @@ jobs:
           ref: main
       - name: Teardown tenant
         run: |
-          echo ${{ github.event }}
+          cat "$GITHUB_EVENT_PATH"
           

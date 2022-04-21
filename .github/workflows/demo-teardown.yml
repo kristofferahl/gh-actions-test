@@ -12,13 +12,13 @@ on:
     inputs:
       display_name:
         description: "Demo display name"
-        required: true
         default: ""
 
 jobs:
   teardown:
     name: Teardown
     runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/heads/demo/') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,7 +27,10 @@ jobs:
       - name: Teardown tenant
         run: |
           export DEMO_NAME="${GITHUB_REF/refs\/heads\/demo\//}"
+          export DEMO_DISPLAY_NAME='${{ github.event.inputs.display_name }}'
+          [[ "${DEMO_DISPLAY_NAME:-}" == '' ]] && DEMO_DISPLAY_NAME="${DEMO_NAME:?}"
           export TENANT_NAME="demo-${DEMO_NAME:?}"
+          echo "${DEMO_DISPLAY_NAME}"
 
           echo ./stack --dev tenant teardown \
             --tenant-name="${TENANT_NAME:?}" \
